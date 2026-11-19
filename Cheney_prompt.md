@@ -112,3 +112,13 @@ Trae 打开文件夹，进入用户根目录
 ```
 
 补充记录（用户上传截图后执行）：已在 `C:\Users\ZhuanZ1\.ssh` 生成 ed25519 密钥，`ssh -T git@github.com` 认证通过（账号 `xxy0111`）；仓库 `https://github.com/xxy0111/xuxinye-octo-system` 已关联为 origin，首次提交已推送。
+
+## 2026-11-19 14:27 | DeepSeek-V4.1-Flash
+
+提示词全文：
+
+```text
+创建技能 skill：提交到 GitHub，将本项目提交 commit 并 push 到 `https://github.com/xxy0111/xuxinye-octo-system.git`，使用已设置公钥。
+```
+
+执行结果：创建项目技能 `.trae/skills/commit-to-github/SKILL.md`，并按该流程完成提交与推送（commit `87cb523`）。
