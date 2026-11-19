@@ -1,0 +1,14 @@
+# 依赖
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# 环境变量（数据库凭据不得提交）
+.env
+.env.local
+
+# 编辑器与系统文件
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

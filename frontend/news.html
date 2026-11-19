@@ -1,0 +1,55 @@
+<!--
+  姓名：徐欣烨 | 学号：22001010111 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash
+  科技新闻列表页：展示 /api/news 接口地址、原始数据与新闻内容
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科技新闻列表 | 徐欣烨</title>
+  <link rel="stylesheet" href="./css/Cheney_common.css">
+</head>
+<body>
+  <div class="Cheney_shell">
+    <header class="Cheney_topbar">
+      <a class="Cheney_topbar__brand" href="./index.html">徐欣烨 <span>·</span> 科技资讯站</a>
+      <nav class="Cheney_topbar__nav">
+        <a class="Cheney_topbar__link" href="./index.html">首页</a>
+        <a class="Cheney_topbar__link Cheney_topbar__link--active" href="./news.html">科技新闻</a>
+        <a class="Cheney_topbar__link" href="./gallery.html">科技图文</a>
+        <a class="Cheney_topbar__link" href="./database.html">数据库连接</a>
+      </nav>
+    </header>
+
+    <main class="Cheney_main">
+      <section class="Cheney_pageHead">
+        <h1 class="Cheney_pageHead__title">科技新闻列表</h1>
+        <p class="Cheney_pageHead__desc">
+          数据表：Cheney_news ｜ 共 8 条测试数据 ｜ 按发布时间倒序
+        </p>
+      </section>
+
+      <section class="Cheney_apiBox">
+        <div class="Cheney_apiBox__head">
+          <span class="Cheney_apiBox__method">GET</span>
+          <span class="Cheney_apiBox__url">http://localhost:8111/api/news</span>
+          <span>后端接口返回的原始数据</span>
+        </div>
+        <pre class="Cheney_apiBox__json" id="Cheney_apiData">正在请求接口……</pre>
+      </section>
+
+      <section class="Cheney_newsList" id="Cheney_newsList">
+        正在加载新闻数据……
+      </section>
+    </main>
+
+    <footer class="Cheney_footer">
+      徐欣烨 · 22001010111 · 高级网页设计课程作业 · 2026
+    </footer>
+  </div>
+
+  <script src="./js/Cheney_common.js"></script>
+  <script src="./js/Cheney_news.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!--
+  姓名：徐欣烨 | 学号：22001010111 | 时间：2026-11-19 | 大模型：DeepSeek-V4.1-Flash
+  首页：项目信息与页面导航（所有页面入口在此维护）
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科技资讯图文展示平台 | 徐欣烨</title>
+  <link rel="stylesheet" href="./css/Cheney_common.css">
+</head>
+<body>
+  <canvas id="Cheney_canvas" class="Cheney_canvas"></canvas>
+
+  <div class="Cheney_shell">
+    <header class="Cheney_topbar">
+      <a class="Cheney_topbar__brand" href="./index.html">徐欣烨 <span>·</span> 科技资讯站</a>
+      <nav class="Cheney_topbar__nav">
+        <a class="Cheney_topbar__link Cheney_topbar__link--active" href="./index.html">首页</a>
+        <a class="Cheney_topbar__link" href="./news.html">科技新闻</a>
+        <a class="Cheney_topbar__link" href="./gallery.html">科技图文</a>
+        <a class="Cheney_topbar__link" href="./database.html">数据库连接</a>
+      </nav>
+    </header>
+
+    <main class="Cheney_main">
+      <section class="Cheney_hero">
+        <span class="Cheney_hero__eyebrow">高级网页设计课程作业</span>
+        <h1 class="Cheney_hero__title">科技资讯图文展示平台</h1>
+        <p class="Cheney_hero__desc">
+          基于原生 HTML / CSS / JavaScript 与 Node.js + Express + MySQL 构建，
+          包含科技新闻列表、科技图文列表与数据库连接测试三个功能页面。
+        </p>
+        <div class="Cheney_hero__meta">
+          <span class="Cheney_tag">姓名：徐欣烨</span>
+          <span class="Cheney_tag">学号：22001010111</span>
+          <span class="Cheney_tag">项目类别：自选（原创）</span>
+          <span class="Cheney_tag Cheney_tag--accent">端口 8111</span>
+        </div>
+      </section>
+
+      <section class="Cheney_navGrid">
+        <a class="Cheney_navCard" href="./news.html">
+          <span class="Cheney_navCard__index">01 / NEWS</span>
+          <h2 class="Cheney_navCard__title">科技新闻列表</h2>
+          <p class="Cheney_navCard__desc">
+            数据来自数据表 Cheney_news，页面展示后端接口地址、原始 JSON 数据与新闻正文。
+          </p>
+          <span class="Cheney_navCard__go">进入页面 →</span>
+        </a>
+
+        <a class="Cheney_navCard" href="./gallery.html">
+          <span class="Cheney_navCard__index">02 / GALLERY</span>
+          <h2 class="Cheney_navCard__title">科技图文列表</h2>
+          <p class="Cheney_navCard__desc">
+            数据来自数据表 Cheney_gallery，以图文卡片形式呈现科技场景与说明。
+          </p>
+          <span class="Cheney_navCard__go">进入页面 →</span>
+        </a>
+
+        <a class="Cheney_navCard" href="./database.html">
+          <span class="Cheney_navCard__index">03 / DATABASE</span>
+          <h2 class="Cheney_navCard__title">数据库连接测试</h2>
+          <p class="Cheney_navCard__desc">
+            输入用户名与密码测试 MySQL 连接，成功与失败均有明确提示。
+          </p>
+          <span class="Cheney_navCard__go">进入页面 →</span>
+        </a>
+      </section>
+    </main>
+
+    <footer class="Cheney_footer">
+      徐欣烨 · 22001010111 · 高级网页设计课程作业 · 2026
+    </footer>
+  </div>
+
+  <script src="./js/Cheney_common.js"></script>
+  <script src="./js/Cheney_index.js"></script>
+</body>
+</html>
