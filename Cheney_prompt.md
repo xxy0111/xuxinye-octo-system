@@ -88,3 +88,27 @@
 （五）完成科技新闻列表页面，新闻的数据存在数据库表里。网页显示后端接口链接和数据内容。
 （六）完成图文列表，图片可以使用网络图片或创建图片，创建一个新的表，网页显示后端接口链接和数据内容。。
 ```
+
+## 2026-11-19 14:26 | DeepSeek-V4.1-Flash
+
+提示词全文：
+
+```text
+1
+准备工作
+watt 加速 → 登录 GitHub → 准备 git 公钥
+
+下载 watt，网络加速（只选 github），一键加速
+登录 GitHub 官网
+Trae 打开文件夹，进入用户根目录
+获得 git 公钥，
+没有则先创建一个
+2
+设置公钥与私人令牌
+把公钥交给 GitHub · 申请私人令牌备用
+
+进入 GitHub 设置界面，添加 SSH 公钥
+再完成私人令牌（Personal Access Token）的设置
+```
+
+补充记录（用户上传截图后执行）：已在 `C:\Users\ZhuanZ1\.ssh` 生成 ed25519 密钥，`ssh -T git@github.com` 认证通过（账号 `xxy0111`）；仓库 `https://github.com/xxy0111/xuxinye-octo-system` 已关联为 origin，首次提交已推送。
