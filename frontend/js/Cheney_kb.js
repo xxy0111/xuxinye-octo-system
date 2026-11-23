@@ -9,6 +9,8 @@
   const Cheney_uploadZoneEl = document.getElementById('Cheney_uploadZone');
   const Cheney_fileInputEl = document.getElementById('Cheney_kbFileInput');
   const Cheney_uploadStatusEl = document.getElementById('Cheney_uploadStatus');
+  const Cheney_uploadProgressEl = document.getElementById('Cheney_uploadProgress');
+  const Cheney_uploadProgressBarEl = document.getElementById('Cheney_uploadProgressBar');
   const Cheney_fileBodyEl = document.getElementById('Cheney_kbFileBody');
   const Cheney_fileSummaryEl = document.getElementById('Cheney_kbFileSummary');
   const Cheney_refreshEl = document.getElementById('Cheney_kbRefresh');
@@ -37,6 +39,12 @@
     Cheney_uploadStatusEl.textContent = Cheney_text;
     Cheney_uploadStatusEl.className =
       'Cheney_kbStatus' + (Cheney_type ? ' Cheney_kbStatus--' + Cheney_type : '');
+  }
+
+  // 上传进度条：0-100
+  function Cheney_setUploadProgress(Cheney_percent) {
+    Cheney_uploadProgressEl.hidden = false;
+    Cheney_uploadProgressBarEl.style.width = Math.max(0, Math.min(100, Cheney_percent)) + '%';
   }
 
   function Cheney_setAskStatus(Cheney_text, Cheney_type) {
@@ -156,14 +164,47 @@
     }
 
     Cheney_uploading = true;
-    Cheney_setUploadStatus('正在上传并解析《' + Cheney_file.name + '》，请稍候……');
+    Cheney_setUploadProgress(0);
+    Cheney_setUploadStatus('正在上传《' + Cheney_file.name + '》 0%');
 
     const Cheney_form = new FormData();
     Cheney_form.append('Cheney_file', Cheney_file);
 
     try {
-      const Cheney_response = await fetch('/api/kb/upload', { method: 'POST', body: Cheney_form });
-      const Cheney_result = await Cheney_response.json();
+      // 使用 XHR 才能拿到上传进度事件
+      const Cheney_result = await new Promise(function (Cheney_resolve, Cheney_reject) {
+        const Cheney_xhr = new XMLHttpRequest();
+        Cheney_xhr.open('POST', '/api/kb/upload');
+
+        Cheney_xhr.upload.onprogress = function (Cheney_event) {
+          if (!Cheney_event.lengthComputable) {
+            return;
+          }
+          const Cheney_percent = Math.round((Cheney_event.loaded / Cheney_event.total) * 100);
+          Cheney_setUploadProgress(Cheney_percent);
+          Cheney_setUploadStatus('正在上传《' + Cheney_file.name + '》 ' + Cheney_percent + '%');
+        };
+
+        Cheney_xhr.upload.onload = function () {
+          Cheney_setUploadProgress(100);
+          Cheney_setUploadStatus('上传完成，服务端正在解析文本并切分片段，请稍候……');
+        };
+
+        Cheney_xhr.onload = function () {
+          try {
+            Cheney_resolve(JSON.parse(Cheney_xhr.responseText));
+          } catch (Cheney_parseError) {
+            Cheney_reject(new Error('接口返回格式异常'));
+          }
+        };
+
+        Cheney_xhr.onerror = function () {
+          Cheney_reject(new Error('网络错误'));
+        };
+
+        Cheney_xhr.send(Cheney_form);
+      });
+
       console.log('[Cheney] 知识库上传接口返回：', Cheney_result);
 
       if (Cheney_result.code !== 0) {
@@ -171,6 +212,7 @@
         Cheney_setUploadStatus(Cheney_result.msg, 'error');
       } else {
         const Cheney_data = Cheney_result.data || {};
+        Cheney_setUploadProgress(100);
         Cheney_setUploadStatus(
           '《' +
             Cheney_data.Cheney_file_name +
@@ -184,7 +226,7 @@
       await Cheney_loadFiles();
     } catch (Cheney_error) {
       console.error('[Cheney] 知识库上传异常：', Cheney_error);
-      Cheney_setUploadStatus('上传失败：无法连接后端服务', 'error');
+      Cheney_setUploadStatus('上传失败：' + Cheney_error.message, 'error');
     } finally {
       Cheney_uploading = false;
       Cheney_fileInputEl.value = '';

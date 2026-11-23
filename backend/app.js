@@ -8,6 +8,7 @@ const cors = require('cors');
 const Cheney_apiRouter = require('./routes/Cheney_api');
 const { Cheney_testConnection } = require('./config/Cheney_db');
 const { Cheney_ensureKbTables } = require('./models/Cheney_kb_model');
+const { Cheney_ensureChatTables } = require('./models/Cheney_conversation_model');
 
 const Cheney_app = express();
 const Cheney_PORT = 8111;
@@ -51,8 +52,12 @@ Cheney_app.listen(Cheney_PORT, () => {
   Cheney_ensureKbTables()
     .then(function () {
       console.log('[Cheney] 知识库数据表已就绪');
+      return Cheney_ensureChatTables();
+    })
+    .then(function () {
+      console.log('[Cheney] 会话数据表已就绪');
     })
     .catch(function (Cheney_error) {
-      console.error('[Cheney] 知识库数据表初始化失败：' + Cheney_error.message);
+      console.error('[Cheney] 数据表初始化失败：' + Cheney_error.message);
     });
 });

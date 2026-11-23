@@ -7,9 +7,14 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
-const Cheney_API_BASE_URL = (process.env.AI_API_BASE_URL || 'https://api.qnaigc.com/v1').replace(/\/+$/, '');
+// 优先读取实验指导书约定的 LLM_* 变量，同时兼容旧版 AI_* 变量
+const Cheney_API_BASE_URL = (
+  process.env.LLM_BASE_URL ||
+  process.env.AI_API_BASE_URL ||
+  'https://api.qnaigc.com/v1'
+).replace(/\/+$/, '');
 const Cheney_API_URL = Cheney_API_BASE_URL + '/chat/completions';
-const Cheney_MODEL = process.env.AI_MODEL || 'qiniu/conatus-free';
+const Cheney_MODEL = process.env.LLM_MODEL || process.env.AI_MODEL || 'qiniu/conatus-free';
 
 // 系统提示词：限定助手身份，避免无关回答
 const Cheney_SYSTEM_PROMPT =
@@ -25,10 +30,11 @@ function Cheney_createError(Cheney_message, Cheney_status) {
 
 // 调用对话接口，返回 { Cheney_reply, Cheney_model, Cheney_usage }
 // Cheney_systemPrompt 可选：RAG 问答会传入专用的知识库提示词
-async function Cheney_createChatCompletion(Cheney_messages, Cheney_systemPrompt) {
-  const Cheney_apiKey = process.env.AI_API_KEY;
+// Cheney_options.signal 可选：前端中断请求时用于取消上游调用
+async function Cheney_createChatCompletion(Cheney_messages, Cheney_systemPrompt, Cheney_options) {
+  const Cheney_apiKey = process.env.LLM_API_KEY || process.env.AI_API_KEY;
   if (!Cheney_apiKey) {
-    throw Cheney_createError('后端未配置 AI_API_KEY，请检查 backend/.env', 500);
+    throw Cheney_createError('后端未配置 LLM_API_KEY，请检查 backend/.env', 500);
   }
 
   const Cheney_requestBody = {
@@ -45,6 +51,12 @@ async function Cheney_createChatCompletion(Cheney_messages, Cheney_systemPrompt)
 
   let Cheney_response;
   try {
+    const Cheney_timeoutSignal = AbortSignal.timeout(60000);
+    const Cheney_signal =
+      Cheney_options && Cheney_options.signal
+        ? AbortSignal.any([Cheney_timeoutSignal, Cheney_options.signal])
+        : Cheney_timeoutSignal;
+
     Cheney_response = await fetch(Cheney_API_URL, {
       method: 'POST',
       headers: {
@@ -52,9 +64,13 @@ async function Cheney_createChatCompletion(Cheney_messages, Cheney_systemPrompt)
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(Cheney_requestBody),
-      signal: AbortSignal.timeout(60000)
+      signal: Cheney_signal
     });
   } catch (Cheney_error) {
+    if (Cheney_options && Cheney_options.signal && Cheney_options.signal.aborted) {
+      console.log('[Cheney] 前端已中断本次请求，停止等待上游返回');
+      throw Cheney_createError('已停止生成', 499);
+    }
     console.error('[Cheney] 对话接口请求失败：' + Cheney_error.message);
     throw Cheney_createError(
       Cheney_error.name === 'TimeoutError' ? 'AI 接口响应超时，请稍后重试' : '无法连接 AI 接口：' + Cheney_error.message,

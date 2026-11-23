@@ -8,6 +8,7 @@ const Cheney_newsController = require('../controllers/Cheney_news_controller');
 const Cheney_galleryController = require('../controllers/Cheney_gallery_controller');
 const Cheney_dbController = require('../controllers/Cheney_db_controller');
 const Cheney_chatController = require('../controllers/Cheney_chat_controller');
+const Cheney_aiRouter = require('./Cheney_ai_routes');
 const Cheney_kbRouter = require('./Cheney_kb_routes');
 
 const Cheney_apiRouter = express.Router();
@@ -24,7 +25,10 @@ Cheney_apiRouter.get('/gallery', Cheney_galleryController.Cheney_getGalleryList)
 // 数据库连接测试
 Cheney_apiRouter.post('/db/test', Cheney_dbController.Cheney_testDatabase);
 
-// AI 对话
+// AI 对话与会话管理（/api/ai/chat 为规范路径）
+Cheney_apiRouter.use('/ai', Cheney_aiRouter);
+
+// 兼容旧路径：保留 /api/chat
 Cheney_apiRouter.post('/chat', Cheney_chatController.Cheney_sendMessage);
 
 // 知识库（上传、列表、详情、删除、检索问答）

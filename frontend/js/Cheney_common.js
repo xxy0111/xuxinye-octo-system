@@ -11,13 +11,37 @@ const Cheney_api = {
     return Cheney_data;
   },
 
-  // 统一 POST 请求
-  async Cheney_post(Cheney_url, Cheney_body) {
-    const Cheney_response = await fetch(Cheney_url, {
+  // 统一 POST 请求，Cheney_options.signal 可用于中断请求
+  async Cheney_post(Cheney_url, Cheney_body, Cheney_options) {
+    const Cheney_fetchOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(Cheney_body)
+    };
+    if (Cheney_options && Cheney_options.signal) {
+      Cheney_fetchOptions.signal = Cheney_options.signal;
+    }
+    const Cheney_response = await fetch(Cheney_url, Cheney_fetchOptions);
+    const Cheney_data = await Cheney_response.json();
+    console.log('[Cheney] 接口请求：' + Cheney_url, Cheney_data);
+    return Cheney_data;
+  },
+
+  // 统一 PUT 请求
+  async Cheney_put(Cheney_url, Cheney_body) {
+    const Cheney_response = await fetch(Cheney_url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Cheney_body)
     });
+    const Cheney_data = await Cheney_response.json();
+    console.log('[Cheney] 接口请求：' + Cheney_url, Cheney_data);
+    return Cheney_data;
+  },
+
+  // 统一 DELETE 请求
+  async Cheney_delete(Cheney_url) {
+    const Cheney_response = await fetch(Cheney_url, { method: 'DELETE' });
     const Cheney_data = await Cheney_response.json();
     console.log('[Cheney] 接口请求：' + Cheney_url, Cheney_data);
     return Cheney_data;

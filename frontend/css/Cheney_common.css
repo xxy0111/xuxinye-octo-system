@@ -693,6 +693,246 @@ a {
   text-align: right;
 }
 
+/* ---------- 会话布局 ---------- */
+.Cheney_chatLayout {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.Cheney_chatSide {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--Cheney_border);
+  border-radius: 16px;
+  background: var(--Cheney_panel);
+  overflow: hidden;
+}
+
+.Cheney_chatSide__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--Cheney_border);
+  color: var(--Cheney_muted);
+  font-size: 13px;
+}
+
+.Cheney_chatSide__new {
+  padding: 4px 10px;
+  border: 1px solid rgba(53, 224, 208, 0.45);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--Cheney_accent);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.Cheney_chatSide__new:hover {
+  background: rgba(53, 224, 208, 0.1);
+}
+
+.Cheney_chatSide__new:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.Cheney_chatSide__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 560px;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.Cheney_chatSide__empty {
+  padding: 10px 6px;
+  color: var(--Cheney_muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.Cheney_convItem {
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.Cheney_convItem:hover {
+  background: rgba(120, 160, 255, 0.07);
+}
+
+.Cheney_convItem--active {
+  border-color: rgba(53, 224, 208, 0.35);
+  background: rgba(53, 224, 208, 0.09);
+}
+
+.Cheney_convItem__title {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--Cheney_text);
+  font-family: inherit;
+  font-size: 13.5px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.Cheney_convItem__meta {
+  display: block;
+  margin-top: 3px;
+  color: var(--Cheney_muted);
+  font-size: 11.5px;
+}
+
+.Cheney_convItem__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.Cheney_convItem__action {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--Cheney_muted);
+  font-family: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.Cheney_convItem__action:hover {
+  color: var(--Cheney_accent);
+}
+
+.Cheney_convItem__action--danger:hover {
+  color: var(--Cheney_danger);
+}
+
+.Cheney_chatPanel__title {
+  max-width: 46%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--Cheney_text);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.Cheney_chatComposer [hidden] {
+  display: none;
+}
+
+.Cheney_chatPanel .Cheney_btn--stop {
+  border: 1px solid rgba(255, 107, 129, 0.55);
+  background: rgba(255, 107, 129, 0.12);
+  color: var(--Cheney_danger);
+}
+
+.Cheney_chatPanel .Cheney_btn--stop:hover {
+  background: rgba(255, 107, 129, 0.2);
+}
+
+/* Markdown 回复样式 */
+.Cheney_chatMsg__bubble--markdown {
+  white-space: normal;
+}
+
+.Cheney_chatMsg__bubble--markdown p {
+  margin: 0 0 8px;
+}
+
+.Cheney_chatMsg__bubble--markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.Cheney_chatMsg__bubble--markdown h1,
+.Cheney_chatMsg__bubble--markdown h2,
+.Cheney_chatMsg__bubble--markdown h3,
+.Cheney_chatMsg__bubble--markdown h4 {
+  margin: 12px 0 6px;
+  color: var(--Cheney_text);
+  line-height: 1.4;
+}
+
+.Cheney_chatMsg__bubble--markdown h1 {
+  font-size: 18px;
+}
+
+.Cheney_chatMsg__bubble--markdown h2 {
+  font-size: 16.5px;
+}
+
+.Cheney_chatMsg__bubble--markdown h3,
+.Cheney_chatMsg__bubble--markdown h4 {
+  font-size: 15px;
+}
+
+.Cheney_chatMsg__bubble--markdown ul,
+.Cheney_chatMsg__bubble--markdown ol {
+  margin: 6px 0 10px;
+  padding-left: 22px;
+}
+
+.Cheney_chatMsg__bubble--markdown li {
+  margin: 3px 0;
+}
+
+.Cheney_chatMsg__bubble--markdown code {
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(79, 140, 255, 0.18);
+  color: #bfe4ff;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 13px;
+}
+
+.Cheney_mdCode {
+  margin: 8px 0 10px;
+  padding: 12px 14px;
+  border: 1px solid rgba(120, 160, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(2, 5, 12, 0.75);
+  overflow-x: auto;
+}
+
+.Cheney_mdCode code {
+  padding: 0;
+  background: transparent;
+  color: #cfe3ff;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+.Cheney_chatMsg__bubble--markdown blockquote {
+  margin: 8px 0;
+  padding: 4px 12px;
+  border-left: 3px solid rgba(53, 224, 208, 0.5);
+  color: var(--Cheney_muted);
+}
+
+.Cheney_chatMsg__bubble--markdown a {
+  color: var(--Cheney_accent);
+  text-decoration: underline;
+}
+
+.Cheney_chatMsg__bubble--markdown strong {
+  color: var(--Cheney_text);
+}
+
 /* ---------- 知识库 ---------- */
 .Cheney_kbGrid {
   display: grid;
@@ -765,6 +1005,21 @@ a {
   min-height: 22px;
   color: var(--Cheney_muted);
   font-size: 13px;
+}
+
+.Cheney_kbProgress {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(120, 160, 255, 0.16);
+  overflow: hidden;
+}
+
+.Cheney_kbProgress__bar {
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--Cheney_accent), var(--Cheney_accent-2));
+  transition: width 0.15s linear;
 }
 
 .Cheney_kbStatus--error {
@@ -1050,6 +1305,18 @@ a {
   .Cheney_chatList {
     height: 380px;
     padding: 16px 14px;
+  }
+
+  .Cheney_chatLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .Cheney_chatSide__list {
+    max-height: 200px;
+  }
+
+  .Cheney_chatPanel__title {
+    max-width: 60%;
   }
 
   .Cheney_chatMsg {

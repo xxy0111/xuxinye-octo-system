@@ -1,6 +1,6 @@
 /**
  * 姓名：徐欣烨 | 学号：22001010111 | 时间：2026-11-23 | 大模型：DeepSeek-V4.1-Flash
- * 导入示例知识库文件：公司介绍与客服FAQ.txt、产品说明.docx（重复执行会跳过已入库文件）
+ * 导入示例知识库文件（8 个文件，重复执行会跳过已入库文件）
  */
 const fs = require('fs');
 const path = require('path');
@@ -15,7 +15,13 @@ const Cheney_UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
 
 const Cheney_SAMPLES = [
   { Cheney_fileName: '公司介绍与客服FAQ.txt' },
-  { Cheney_fileName: '产品说明.docx' }
+  { Cheney_fileName: '产品说明.docx' },
+  { Cheney_fileName: '售后服务与退换货政策.txt' },
+  { Cheney_fileName: '技术架构与安全合规.txt' },
+  { Cheney_fileName: '渠道合作与联系方式.txt' },
+  { Cheney_fileName: '常见故障排查手册.txt' },
+  { Cheney_fileName: '实施交付与培训流程.txt' },
+  { Cheney_fileName: '价格与授权说明.txt' }
 ];
 
 async function Cheney_seedOne(Cheney_sample) {

@@ -313,3 +313,79 @@
 - **响应（限流）**：`{ "code": 429, "msg": "知识库检索已完成，但 AI 接口当前限流（HTTP 429），请稍后重试", "data": { "Cheney_hit": true, "Cheney_sources": [...] } }`
 - **服务端日志**：输出完整「参考资料 + 问题」请求体与模型返回数据，不打印密钥
 - **修改时间**：2026-11-23 14:05
+
+---
+
+## AI 会话持久化接口（2026-11-23）
+
+- **规范对话路径**：`POST /api/ai/chat`；旧路径 `POST /api/chat` 保留兼容，行为一致。
+- **环境变量**：`LLM_API_KEY`、`LLM_BASE_URL`（https://api.qnaigc.com/v1）、`LLM_MODEL`（qiniu/conatus-free），代码同时兼容旧名 `AI_API_KEY` / `AI_API_BASE_URL` / `AI_MODEL`；密钥仅存在于 `backend/.env`。
+- **Token 预算**：历史消息按约 3000 tokens、最多 20 条从最新向前保留，保证首条为 user；实际裁剪条数通过 `Cheney_history_trimmed` 返回。
+- **中断机制**：前端点击“停止”会中止 fetch，服务端检测到连接关闭后通过 `AbortController` 取消上游请求，本轮消息不落库。
+
+### POST /api/ai/chat
+
+- **请求体（推荐，带会话）**：
+
+```json
+{ "Cheney_conversation_id": 2, "Cheney_message": "用 Markdown 给出一个 JavaScript 代码块示例" }
+```
+
+- **请求体（兼容旧版，无状态）**：`{ "Cheney_messages": [{ "role": "user", "content": "..." }] }`
+- **响应（成功）**：
+
+```json
+{
+  "code": 0,
+  "msg": "对话成功",
+  "data": {
+    "Cheney_conversation_id": 2,
+    "Cheney_conversation_title": "Markdown 渲染测试",
+    "Cheney_reply": "```javascript\nconsole.log(\"你好\");\n```\n\n- 代码块用途……",
+    "Cheney_model": "qiniu/conatus-free",
+    "Cheney_usage": { "prompt_tokens": 102, "completion_tokens": 79, "total_tokens": 181 },
+    "Cheney_history_trimmed": 0
+  }
+}
+```
+
+- **响应（参数错误）**：`code: 400`，缺少会话 ID/消息，或消息超过 2000 字。
+- **响应（会话不存在）**：`code: 404`。
+- **响应（限流）**：`code: 429`，提示稍后重试。
+
+### GET /api/ai/conversations
+
+- **响应**：`{ code: 0, msg: "查询成功", data: { Cheney_total: 1, Cheney_list: [{ Cheney_id, Cheney_title, Cheney_create_time, Cheney_update_time, Cheney_message_count }] } }`
+
+### POST /api/ai/conversations
+
+- **请求体**：`{ "Cheney_title": "可选标题" }`，缺省为“新对话”；响应返回新建会话对象。
+
+### PUT /api/ai/conversations/:Cheney_id
+
+- **请求体**：`{ "Cheney_title": "新名称" }`，名称 1-100 字；响应返回更新后的会话。
+
+### DELETE /api/ai/conversations/:Cheney_id
+
+- **响应**：`{ "code": 0, "msg": "会话已删除", "data": { "Cheney_id": 2 } }`，同时删除该会话全部消息。
+
+### GET /api/ai/conversations/:Cheney_id/messages
+
+- **响应**：
+
+```json
+{
+  "code": 0,
+  "msg": "查询成功",
+  "data": {
+    "Cheney_conversation": { "Cheney_id": 2, "Cheney_title": "Markdown 渲染测试", "Cheney_create_time": "...", "Cheney_update_time": "..." },
+    "Cheney_total": 2,
+    "Cheney_list": [
+      { "Cheney_id": 1, "Cheney_role": "user", "Cheney_content": "…", "Cheney_create_time": "..." },
+      { "Cheney_id": 2, "Cheney_role": "assistant", "Cheney_content": "…", "Cheney_create_time": "..." }
+    ]
+  }
+}
+```
+
+- **修改时间**：2026-11-23 15:05

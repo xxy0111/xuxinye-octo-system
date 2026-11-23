@@ -189,3 +189,32 @@ Trae 打开文件夹，进入用户根目录
 - 新增页面 `frontend/kb.html`、`frontend/js/Cheney_kb.js`，样式追加到 `Cheney_common.css`；首页与各页导航加入「RAG 知识库」入口。
 - 示例文件 `backend/sample/公司介绍与客服FAQ.txt`、`backend/sample/产品说明.docx`，通过 `npm run seed:kb` 导入（2 文件 5 片段）。
 - 实测问答命中并返回来源卡片；无命中如实说明；429 时返回检索来源与限流提示；控制台输出请求/响应且不含 key。
+
+## 2026-11-23 14:52 | DeepSeek-V4.1-Flash
+
+提示词全文：
+
+```text
+按实验指导书继续推进剩余缺口，用户已确认范围。已定的口径：端口保持 8111；记录文件名保持 Cheney_ 前缀不改；RAG 继续用 BM25，并在文档里说明无 embedding 模型的原因。
+
+要做的（按优先级）：
+1. 会话持久化：新增会话表与消息表，聊天页支持会话列表、新建、重命名、删除、历史加载；对话请求按 Token 预算裁剪历史；刷新后历史仍在。
+2. 规范对齐：新增 /api/ai/chat 路由并保留 /api/chat 兼容；环境变量改为 LLM_API_KEY / LLM_BASE_URL / LLM_MODEL（旧变量名兼容或一并迁移，注意不把密钥写进代码）。
+3. 聊天体验：回复支持 Markdown 与代码块渲染；发送中可中断（停止按钮）。
+4. 知识库：上传显示进度；把示例数据补到 Cheney_kb_file 与 Cheney_kb_chunk 每表至少 8 条，保证问答演示仍正常。
+5. 同步更新接口文档、数据库文档、提示词文档与 readme。
+
+验证要求：改完重启服务，确认新旧页面与接口全部正常，会话刷新保留、Markdown 渲染、中断、上传进度、检索问答各实测一次。
+
+全部完成并验证通过后，把改动提交到本地 git（清晰的提交信息，不要提交 .env 与密钥），不要推送。
+```
+
+执行结果：
+- 会话持久化：新增 `Cheney_conversation`、`Cheney_chat_message` 表与 `Cheney_conversation_model.js`、`Cheney_conversation_controller.js`、`Cheney_ai_routes.js`；聊天页改为左侧会话列表 + 右侧对话区，支持新建、重命名、删除、历史加载；刷新后历史保留。
+- Token 预算：约 3000 tokens、最多 20 条，从最新向前保留并保证首条为 user；单测 30 条长消息裁剪为 8 条（约 2480 tokens）。
+- 规范对齐：`POST /api/ai/chat` 上线并保留 `/api/chat`；`.env` 中变量已改为 `LLM_API_KEY` / `LLM_BASE_URL` / `LLM_MODEL`，代码兼容旧名。
+- 聊天体验：自实现 Markdown 渲染（代码块、行内代码、标题、列表、引用、链接，全部先转义再解析）；新增“停止”按钮，前端 AbortController + 后端连接关闭取消上游，本轮消息不落库。
+- 知识库：上传改用 XHR 并展示进度条与百分比，解析阶段有状态提示；示例文件扩充到 8 个（`Cheney_kb_file` 8 条、`Cheney_kb_chunk` 14 条），RAG 问答仍正常。
+- 文档：接口、数据库、提示词与 readme 已同步。
+- 验证：浏览器实测 Markdown 渲染、刷新后历史保留、停止按钮均通过；上传进度条在完成后显示 100%；6 个页面与全部旧接口 200。
+- 遗留：`.doc`/`.ppt`/真实 PDF 未做端到端解析验证；上传进度仅验证最终 100% 状态；未实现 SSE 流式输出；免费模型偶发 429。

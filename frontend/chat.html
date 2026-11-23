@@ -1,6 +1,6 @@
 <!--
   姓名：徐欣烨 | 学号：22001010111 | 时间：2026-11-23 | 大模型：DeepSeek-V4.1-Flash
-  AI 对话页：通过后端 /api/chat 转发硅基流动对话接口
+  AI 对话页：会话持久化、Markdown 渲染、可中断的对话请求，后端 /api/ai/chat 转发
 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -28,44 +28,57 @@
       <section class="Cheney_pageHead">
         <h1 class="Cheney_pageHead__title">AI 对话</h1>
         <p class="Cheney_pageHead__desc">
-          对话请求由后端转发至兼容 OpenAI 协议的接口 ｜ 模型：qiniu/conatus-free ｜ 密钥仅保存在服务端
+          会话与消息保存在服务端 MySQL ｜ 模型：qiniu/conatus-free ｜ 密钥仅保存在服务端
         </p>
       </section>
 
       <section class="Cheney_apiBox">
         <div class="Cheney_apiBox__head">
           <span class="Cheney_apiBox__method">POST</span>
-          <span class="Cheney_apiBox__url">http://localhost:8111/api/chat</span>
+          <span class="Cheney_apiBox__url">http://localhost:8111/api/ai/chat</span>
           <span>最近一次后端接口返回的原始数据</span>
         </div>
         <pre class="Cheney_apiBox__json" id="Cheney_apiData">尚未发起对话。</pre>
       </section>
 
-      <section class="Cheney_chatPanel">
-        <div class="Cheney_chatPanel__bar">
-          <span>在线助手 · <strong>qiniu/conatus-free</strong></span>
-          <button class="Cheney_chatPanel__clear" id="Cheney_chatClear" type="button">清空对话</button>
-        </div>
+      <section class="Cheney_chatLayout">
+        <aside class="Cheney_chatSide">
+          <div class="Cheney_chatSide__head">
+            <span>会话</span>
+            <button class="Cheney_chatSide__new" id="Cheney_newConversation" type="button">＋ 新建</button>
+          </div>
+          <div class="Cheney_chatSide__list" id="Cheney_conversationList">
+            <p class="Cheney_chatSide__empty">正在加载会话……</p>
+          </div>
+        </aside>
 
-        <div class="Cheney_chatList" id="Cheney_chatList">
-          <p class="Cheney_chatEmpty" id="Cheney_chatEmpty">
-            <strong>开始和 AI 助手对话</strong>
-            可以询问科技资讯、前端开发或数据库相关问题。输入内容后按 Enter 发送，Shift + Enter 换行。
-          </p>
-        </div>
+        <div class="Cheney_chatPanel">
+          <div class="Cheney_chatPanel__bar">
+            <span class="Cheney_chatPanel__title" id="Cheney_conversationTitle">未选择会话</span>
+            <span>在线助手 · <strong>qiniu/conatus-free</strong></span>
+          </div>
 
-        <div class="Cheney_chatStatus" id="Cheney_chatStatus"></div>
+          <div class="Cheney_chatList" id="Cheney_chatList">
+            <p class="Cheney_chatEmpty" id="Cheney_chatEmpty">
+              <strong>开始和 AI 助手对话</strong>
+              历史对话保存在服务端，刷新页面不会丢失。输入内容后按 Enter 发送，Shift + Enter 换行，回复过程中可点击“停止”。
+            </p>
+          </div>
 
-        <div class="Cheney_chatComposer">
-          <textarea
-            class="Cheney_chatComposer__input"
-            id="Cheney_chatInput"
-            rows="2"
-            maxlength="2000"
-            placeholder="请输入你的问题，例如：用一句话介绍什么是大模型？"></textarea>
-          <button class="Cheney_btn" id="Cheney_chatSend" type="button">发送</button>
+          <div class="Cheney_chatStatus" id="Cheney_chatStatus"></div>
+
+          <div class="Cheney_chatComposer">
+            <textarea
+              class="Cheney_chatComposer__input"
+              id="Cheney_chatInput"
+              rows="2"
+              maxlength="2000"
+              placeholder="请输入你的问题，例如：用 Markdown 给我一个 JavaScript 代码块示例"></textarea>
+            <button class="Cheney_btn" id="Cheney_chatSend" type="button">发送</button>
+            <button class="Cheney_btn Cheney_btn--stop" id="Cheney_chatStop" type="button" hidden>停止</button>
+          </div>
+          <p class="Cheney_chatComposer__hint">Enter 发送 ｜ Shift + Enter 换行 ｜ 单条消息最多 2000 字 ｜ 按 Token 预算自动裁剪历史</p>
         </div>
-        <p class="Cheney_chatComposer__hint">Enter 发送 ｜ Shift + Enter 换行 ｜ 单条消息最多 2000 字</p>
       </section>
     </main>
 

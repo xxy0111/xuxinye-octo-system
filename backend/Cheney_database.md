@@ -168,3 +168,43 @@ CREATE TABLE IF NOT EXISTS Cheney_kb_chunk (
 
 > 说明：两张表由服务启动时自动执行 `CREATE TABLE IF NOT EXISTS` 创建；示例数据由 `backend/scripts/Cheney_seed_kb.js`（`npm run seed:kb`）从 `backend/sample/` 解析导入，当前共 2 个文件、5 个片段。
 > 完整重建方式：先执行建库语句与以上三段 SQL，再运行 `cd backend && npm run seed:kb` 导入示例文件。
+
+---
+
+## 2026-11-23 14:52 创建 AI 会话表 Cheney_conversation、Cheney_chat_message
+
+```sql
+USE Cheney_web;
+
+CREATE TABLE IF NOT EXISTS Cheney_conversation (
+  Cheney_id INT AUTO_INCREMENT PRIMARY KEY,
+  Cheney_title VARCHAR(100) NOT NULL DEFAULT '新对话' COMMENT '会话标题',
+  Cheney_create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  Cheney_update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS Cheney_chat_message (
+  Cheney_id INT AUTO_INCREMENT PRIMARY KEY,
+  Cheney_conversation_id INT NOT NULL COMMENT '所属会话 ID',
+  Cheney_role VARCHAR(16) NOT NULL COMMENT 'user / assistant',
+  Cheney_content TEXT NOT NULL COMMENT '消息内容',
+  Cheney_create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
+  KEY Cheney_idx_conversation (Cheney_conversation_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+> 说明：两张表由 `backend/app.js` 启动时自动创建；标题在首轮对话后自动取用户消息前 24 字，也可通过接口重命名；删除会话会同步删除其全部消息。
+> 当前数据：`Cheney_conversation` 1 条（“Markdown 渲染测试”，4 条消息）、`Cheney_chat_message` 4 条，用于浏览器验证会话持久化与 Markdown 渲染。
+
+## 2026-11-23 14:52 知识库示例数据扩充至 8 个文件、14 个片段
+
+新增示例文件（`backend/sample/`）：
+
+- 售后服务与退换货政策.txt（1 片段）
+- 技术架构与安全合规.txt（2 片段）
+- 渠道合作与联系方式.txt（2 片段）
+- 常见故障排查手册.txt（2 片段）
+- 实施交付与培训流程.txt（1 片段）
+- 价格与授权说明.txt（1 片段）
+
+连同原有的公司介绍与客服FAQ.txt（3 片段）、产品说明.docx（2 片段），`Cheney_kb_file` 共 8 条、`Cheney_kb_chunk` 共 14 条，满足每表不少于 8 条测试数据的要求。
