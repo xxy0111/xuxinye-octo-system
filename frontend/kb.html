@@ -1,0 +1,119 @@
+<!--
+  姓名：徐欣烨 | 学号：22001010111 | 时间：2026-11-23 | 大模型：DeepSeek-V4.1-Flash
+  RAG 知识库页：文件上传/解析入库、列表与管理、BM25 检索问答
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG 知识库 | 徐欣烨</title>
+  <link rel="stylesheet" href="./css/Cheney_common.css">
+</head>
+<body>
+  <div class="Cheney_shell">
+    <header class="Cheney_topbar">
+      <a class="Cheney_topbar__brand" href="./index.html">徐欣烨 <span>·</span> 科技资讯站</a>
+      <nav class="Cheney_topbar__nav">
+        <a class="Cheney_topbar__link" href="./index.html">首页</a>
+        <a class="Cheney_topbar__link" href="./news.html">科技新闻</a>
+        <a class="Cheney_topbar__link" href="./gallery.html">科技图文</a>
+        <a class="Cheney_topbar__link" href="./chat.html">AI 对话</a>
+        <a class="Cheney_topbar__link Cheney_topbar__link--active" href="./kb.html">RAG 知识库</a>
+        <a class="Cheney_topbar__link" href="./database.html">数据库连接</a>
+      </nav>
+    </header>
+
+    <main class="Cheney_main">
+      <section class="Cheney_pageHead">
+        <h1 class="Cheney_pageHead__title">RAG 知识库</h1>
+        <p class="Cheney_pageHead__desc">
+          上传资料后自动解析切分入库 ｜ 检索采用 BM25 关键词打分（接口无 embedding 模型）｜ 回答由 qiniu/conatus-free 生成并标注来源
+        </p>
+      </section>
+
+      <section class="Cheney_apiBox">
+        <div class="Cheney_apiBox__head">
+          <span class="Cheney_apiBox__method">POST</span>
+          <span class="Cheney_apiBox__url">http://localhost:8111/api/kb/ask</span>
+          <span>最近一次问答接口返回的原始数据</span>
+        </div>
+        <pre class="Cheney_apiBox__json" id="Cheney_kbApiData">尚未发起问答。</pre>
+      </section>
+
+      <section class="Cheney_kbGrid">
+        <div class="Cheney_kbCard">
+          <div class="Cheney_kbCard__head">
+            <h2 class="Cheney_kbCard__title">上传知识库文件</h2>
+          </div>
+          <div class="Cheney_uploadZone" id="Cheney_uploadZone">
+            <span class="Cheney_uploadZone__icon">＋</span>
+            <strong>点击选择文件，或拖拽到此处</strong>
+            <span>支持 doc / docx / ppt / pptx / pdf / txt，单文件不超过 25MB</span>
+          </div>
+          <input type="file" id="Cheney_kbFileInput" accept=".doc,.docx,.ppt,.pptx,.pdf,.txt" hidden>
+          <p class="Cheney_kbStatus" id="Cheney_uploadStatus">读取文件后会在服务端解析并切分入库。</p>
+        </div>
+
+        <div class="Cheney_kbCard">
+          <div class="Cheney_kbCard__head">
+            <h2 class="Cheney_kbCard__title">已入库文件</h2>
+            <button class="Cheney_kbAction" id="Cheney_kbRefresh" type="button">刷新列表</button>
+          </div>
+          <p class="Cheney_kbCard__desc" id="Cheney_kbFileSummary">正在加载……</p>
+          <div class="Cheney_kbTableWrap">
+            <table class="Cheney_kbTable">
+              <thead>
+                <tr>
+                  <th>文件名</th>
+                  <th>类型</th>
+                  <th>片段数</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="Cheney_kbFileBody">
+                <tr><td colspan="5" class="Cheney_kbEmpty">正在加载文件列表……</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="Cheney_kbAsk">
+        <div class="Cheney_kbCard__head">
+          <h2 class="Cheney_kbCard__title">检索问答</h2>
+        </div>
+        <p class="Cheney_kbCard__desc">
+          提问后先在知识库中检索相关片段，再连同问题交给大模型回答；回答中的【来源N】对应下方依据卡片。
+        </p>
+        <div class="Cheney_kbAsk__composer">
+          <textarea class="Cheney_kbAsk__input" id="Cheney_kbQuestion" maxlength="500"
+            placeholder="例如：星澜科技的客服工作时间是什么时候？私有化部署需要什么服务器配置？"></textarea>
+          <button class="Cheney_btn" id="Cheney_kbAskBtn" type="button">检索并提问</button>
+        </div>
+        <p class="Cheney_kbStatus" id="Cheney_kbAskStatus"></p>
+        <div class="Cheney_kbAnswer" id="Cheney_kbAnswer" hidden></div>
+        <div class="Cheney_kbSources" id="Cheney_kbSources"></div>
+      </section>
+    </main>
+
+    <footer class="Cheney_footer">
+      徐欣烨 · 22001010111 · 高级网页设计课程作业 · 2026
+    </footer>
+  </div>
+
+  <div class="Cheney_modal" id="Cheney_chunkModal">
+    <div class="Cheney_modal__panel">
+      <div class="Cheney_modal__head">
+        <span id="Cheney_chunkTitle">文件片段</span>
+        <button class="Cheney_modal__close" id="Cheney_chunkClose" type="button">关闭</button>
+      </div>
+      <div class="Cheney_modal__body" id="Cheney_chunkBody"></div>
+    </div>
+  </div>
+
+  <script src="./js/Cheney_common.js"></script>
+  <script src="./js/Cheney_kb.js"></script>
+</body>
+</html>

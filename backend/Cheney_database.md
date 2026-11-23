@@ -135,3 +135,36 @@ VALUES
 ```
 
 > 重建方式：先执行本文件顶部的建库语句，再按时间顺序执行以上两段 SQL，即可得到与当前完全一致的数据库。
+
+---
+
+## 2026-11-23 14:05 创建 RAG 知识库表 Cheney_kb_file、Cheney_kb_chunk
+
+```sql
+USE Cheney_web;
+
+CREATE TABLE IF NOT EXISTS Cheney_kb_file (
+  Cheney_id INT AUTO_INCREMENT PRIMARY KEY,
+  Cheney_file_name VARCHAR(255) NOT NULL COMMENT '原始文件名',
+  Cheney_file_ext VARCHAR(16) NOT NULL COMMENT '扩展名',
+  Cheney_stored_name VARCHAR(255) NULL COMMENT '服务端存储文件名',
+  Cheney_file_size INT NOT NULL DEFAULT 0 COMMENT '文件大小（字节）',
+  Cheney_chunk_count INT NOT NULL DEFAULT 0 COMMENT '切分片段数',
+  Cheney_status VARCHAR(16) NOT NULL DEFAULT 'ready' COMMENT 'ready/failed/parsing',
+  Cheney_error_msg VARCHAR(500) NULL COMMENT '解析错误或备注',
+  Cheney_delete_flag TINYINT NOT NULL DEFAULT 0 COMMENT '软删除标记',
+  Cheney_create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS Cheney_kb_chunk (
+  Cheney_id INT AUTO_INCREMENT PRIMARY KEY,
+  Cheney_file_id INT NOT NULL COMMENT '所属文件 ID',
+  Cheney_chunk_index INT NOT NULL COMMENT '片段序号（从 0 开始）',
+  Cheney_content TEXT NOT NULL COMMENT '片段文本',
+  Cheney_char_count INT NOT NULL DEFAULT 0 COMMENT '字符数',
+  KEY Cheney_idx_file (Cheney_file_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+> 说明：两张表由服务启动时自动执行 `CREATE TABLE IF NOT EXISTS` 创建；示例数据由 `backend/scripts/Cheney_seed_kb.js`（`npm run seed:kb`）从 `backend/sample/` 解析导入，当前共 2 个文件、5 个片段。
+> 完整重建方式：先执行建库语句与以上三段 SQL，再运行 `cd backend && npm run seed:kb` 导入示例文件。

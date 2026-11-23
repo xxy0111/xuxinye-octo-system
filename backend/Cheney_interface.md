@@ -106,6 +106,50 @@
 
 ---
 
+## POST /api/chat
+
+- **接口路径**：`/api/chat`
+- **HTTP 方法**：POST
+- **说明**：转发硅基流动对话接口，密钥仅保存在 `backend/.env`，前端不接触密钥。
+- **请求参数**（JSON 请求体，`Cheney_messages` 为对话历史，最多 20 条，单条最多 2000 字，最后一条必须为 `user`）：
+
+```json
+{
+  "Cheney_messages": [
+    { "role": "user", "content": "用一句话介绍什么是大模型？" }
+  ]
+}
+```
+
+- **响应格式（成功）**：
+
+```json
+{
+  "code": 0,
+  "msg": "对话成功",
+  "data": {
+    "Cheney_reply": "大模型是在海量数据上训练、具备通用语言理解与生成能力的神经网络模型。",
+    "Cheney_model": "deepseek-ai/DeepSeek-V4-Flash",
+    "Cheney_usage": {
+      "prompt_tokens": 58,
+      "completion_tokens": 28,
+      "total_tokens": 86
+    }
+  }
+}
+```
+
+- **响应格式（参数错误 / 上游失败）**：
+
+```json
+{ "code": 400, "msg": "请求参数错误：Cheney_messages 必须是以 user 消息结尾的非空数组", "data": null }
+{ "code": 502, "msg": "AI 接口调用失败：Sorry, your account balance is insufficient", "data": null }
+```
+
+- **修改时间**：2026-11-23 13:40
+
+---
+
 ## POST /api/db/test
 
 - **接口路径**：`/api/db/test`
@@ -137,3 +181,135 @@
 ```
 
 - **修改时间**：2026-11-19 13:53
+
+---
+
+## POST /api/chat（上游接口切换记录）
+
+- **接口路径**：`/api/chat`（请求与响应结构不变）
+- **HTTP 方法**：POST
+- **上游配置**（只存在于 `backend/.env`）：
+  - `AI_API_KEY`：兼容 OpenAI 协议的接口密钥（不打印、不下发前端）
+  - `AI_API_BASE_URL`：`https://api.qnaigc.com/v1`
+  - `AI_MODEL`：`qiniu/conatus-free`
+- **实际请求**：`POST https://api.qnaigc.com/v1/chat/completions`，`Authorization: Bearer <AI_API_KEY>`
+- **响应格式（成功）**：
+
+```json
+{
+  "code": 0,
+  "msg": "对话成功",
+  "data": {
+    "Cheney_reply": "大模型是一种基于海量数据训练、具有强大理解和生成能力的人工智能模型。",
+    "Cheney_model": "qiniu/conatus-free",
+    "Cheney_usage": { "prompt_tokens": 48, "completion_tokens": 39, "total_tokens": 87 }
+  }
+}
+```
+
+- **响应格式（上游限流）**：免费模型存在全局并发限制，可能返回
+  `{ "code": 502, "msg": "AI 接口调用失败：HTTP 429", "data": null }`，稍后重试即可。
+- **服务端日志**：控制台输出「AI 请求地址 / AI 请求数据 / AI 返回数据」，不含密钥。
+- **修改时间**：2026-11-23 13:58
+
+---
+
+## RAG 知识库接口（2026-11-23）
+
+统一前缀 `/api/kb`，检索采用 BM25 关键词打分（中文二元组 + 英文单词），不依赖 embedding。
+
+### POST /api/kb/upload
+
+- **请求**：`multipart/form-data`，文件字段名 `Cheney_file`，支持 `.doc/.docx/.ppt/.pptx/.pdf/.txt`，单文件 ≤ 25MB
+- **响应（成功）**：
+
+```json
+{
+  "code": 0,
+  "msg": "文件已解析并入库",
+  "data": {
+    "Cheney_id": 3,
+    "Cheney_file_name": "产品说明.docx",
+    "Cheney_chunk_count": 2,
+    "Cheney_status": "ready",
+    "Cheney_warning": null
+  }
+}
+```
+
+- **响应（失败）**：`{ "code": 500, "msg": "文件解析失败：未能解析出文本（可能是扫描版或纯图片文件）", "data": { "Cheney_id": 3 } }`
+
+### GET /api/kb/files
+
+- **请求参数**：无
+- **响应**：
+
+```json
+{
+  "code": 0,
+  "msg": "查询成功",
+  "data": {
+    "Cheney_total": 2,
+    "Cheney_list": [
+      {
+        "Cheney_id": 2,
+        "Cheney_file_name": "产品说明.docx",
+        "Cheney_file_ext": ".docx",
+        "Cheney_file_size": 4792,
+        "Cheney_chunk_count": 2,
+        "Cheney_status": "ready",
+        "Cheney_error_msg": null,
+        "Cheney_create_time": "2026-11-23T06:02:18.000Z"
+      }
+    ]
+  }
+}
+```
+
+### GET /api/kb/files/:Cheney_id/chunks
+
+- **请求参数**：路径参数 `Cheney_id`
+- **响应**：`{ code: 0, msg: "查询成功", data: { Cheney_file: {...}, Cheney_total: 3, Cheney_list: [{ Cheney_id, Cheney_chunk_index, Cheney_content, Cheney_char_count }] } }`
+- **未找到**：`{ "code": 404, "msg": "文件不存在或已删除", "data": null }`
+
+### DELETE /api/kb/files/:Cheney_id
+
+- **请求参数**：路径参数 `Cheney_id`
+- **响应**：`{ "code": 0, "msg": "文件已删除", "data": { "Cheney_id": 3 } }`
+
+### POST /api/kb/ask
+
+- **请求参数**：
+
+```json
+{ "Cheney_question": "客服的工作时间和联系方式是什么？" }
+```
+
+- **响应（命中并回答）**：
+
+```json
+{
+  "code": 0,
+  "msg": "回答完成",
+  "data": {
+    "Cheney_answer": "人工客服工作时间为工作日 9:00 至 18:00（北京时间）……【来源1】【来源2】",
+    "Cheney_hit": true,
+    "Cheney_sources": [
+      {
+        "Cheney_file_id": 1,
+        "Cheney_file_name": "公司介绍与客服FAQ.txt",
+        "Cheney_chunk_index": 0,
+        "Cheney_score": 10.01,
+        "Cheney_snippet": "星澜科技公司介绍与客服 FAQ……"
+      }
+    ],
+    "Cheney_model": "qiniu/conatus-free",
+    "Cheney_usage": { "prompt_tokens": 1349, "completion_tokens": 135, "total_tokens": 1484 }
+  }
+}
+```
+
+- **响应（未命中）**：`{ "code": 0, "msg": "未检索到相关内容", "data": { "Cheney_answer": "知识库中没有找到与该问题相关的内容……", "Cheney_hit": false, "Cheney_sources": [] } }`
+- **响应（限流）**：`{ "code": 429, "msg": "知识库检索已完成，但 AI 接口当前限流（HTTP 429），请稍后重试", "data": { "Cheney_hit": true, "Cheney_sources": [...] } }`
+- **服务端日志**：输出完整「参考资料 + 问题」请求体与模型返回数据，不打印密钥
+- **修改时间**：2026-11-23 14:05
