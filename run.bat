@@ -7,7 +7,7 @@ title 徐欣烨 - 科技资讯图文展示平台
 cd /d "%~dp0backend"
 
 if not exist "node_modules" (
-  echo [Cheney] 未检测到依赖，开始安装……
+  echo [xuxinye] 未检测到依赖，开始安装……
   where cnpm >nul 2>nul
   if %errorlevel%==0 (
     call cnpm install
@@ -16,7 +16,7 @@ if not exist "node_modules" (
   )
 )
 
-echo [Cheney] 正在启动服务：http://localhost:8111
+echo [xuxinye] 正在启动服务：http://localhost:8111
 node app.js
 
 pause

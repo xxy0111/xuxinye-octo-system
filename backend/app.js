@@ -5,59 +5,59 @@
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
-const Cheney_apiRouter = require('./routes/Cheney_api');
-const { Cheney_testConnection } = require('./config/Cheney_db');
-const { Cheney_ensureKbTables } = require('./models/Cheney_kb_model');
-const { Cheney_ensureChatTables } = require('./models/Cheney_conversation_model');
+const xuxinye_apiRouter = require('./routes/xuxinye_api');
+const { xuxinye_testConnection } = require('./config/xuxinye_db');
+const { xuxinye_ensureKbTables } = require('./models/xuxinye_kb_model');
+const { xuxinye_ensureChatTables } = require('./models/xuxinye_conversation_model');
 
-const Cheney_app = express();
-const Cheney_PORT = 8111;
+const xuxinye_app = express();
+const xuxinye_PORT = 8111;
 
 // 支持所有跨域访问
-Cheney_app.use(cors());
-Cheney_app.use(express.json());
-Cheney_app.use(express.urlencoded({ extended: true }));
+xuxinye_app.use(cors());
+xuxinye_app.use(express.json());
+xuxinye_app.use(express.urlencoded({ extended: true }));
 
 // 统一 JSON 响应格式：{ code, msg, data }
-Cheney_app.use((Cheney_req, Cheney_res, Cheney_next) => {
-  Cheney_res.Cheney_success = (Cheney_data = null, Cheney_msg = '操作成功') => {
-    Cheney_res.json({ code: 0, msg: Cheney_msg, data: Cheney_data });
+xuxinye_app.use((xuxinye_req, xuxinye_res, xuxinye_next) => {
+  xuxinye_res.xuxinye_success = (xuxinye_data = null, xuxinye_msg = '操作成功') => {
+    xuxinye_res.json({ code: 0, msg: xuxinye_msg, data: xuxinye_data });
   };
-  Cheney_res.Cheney_fail = (Cheney_msg = '操作失败', Cheney_code = 1, Cheney_data = null) => {
-    Cheney_res.json({ code: Cheney_code, msg: Cheney_msg, data: Cheney_data });
+  xuxinye_res.xuxinye_fail = (xuxinye_msg = '操作失败', xuxinye_code = 1, xuxinye_data = null) => {
+    xuxinye_res.json({ code: xuxinye_code, msg: xuxinye_msg, data: xuxinye_data });
   };
-  Cheney_next();
+  xuxinye_next();
 });
 
 // 接口路由
-Cheney_app.use('/api', Cheney_apiRouter);
+xuxinye_app.use('/api', xuxinye_apiRouter);
 
 // /api 下未匹配到的接口统一返回 404 结构
-Cheney_app.use('/api', (Cheney_req, Cheney_res) => {
-  Cheney_res.Cheney_fail('接口不存在：' + Cheney_req.method + ' ' + Cheney_req.originalUrl, 404);
+xuxinye_app.use('/api', (xuxinye_req, xuxinye_res) => {
+  xuxinye_res.xuxinye_fail('接口不存在：' + xuxinye_req.method + ' ' + xuxinye_req.originalUrl, 404);
 });
 
 // 托管前端页面
-Cheney_app.use(express.static(path.join(__dirname, '..', 'frontend')));
+xuxinye_app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // 兜底错误处理
-Cheney_app.use((Cheney_error, Cheney_req, Cheney_res, Cheney_next) => {
-  console.error('[Cheney] 服务异常：' + Cheney_error.message);
-  Cheney_res.Cheney_fail('服务异常：' + Cheney_error.message, 500);
+xuxinye_app.use((xuxinye_error, xuxinye_req, xuxinye_res, xuxinye_next) => {
+  console.error('[xuxinye] 服务异常：' + xuxinye_error.message);
+  xuxinye_res.xuxinye_fail('服务异常：' + xuxinye_error.message, 500);
 });
 
-Cheney_app.listen(Cheney_PORT, () => {
-  console.log('[Cheney] 服务已启动：http://localhost:' + Cheney_PORT);
-  Cheney_testConnection();
-  Cheney_ensureKbTables()
+xuxinye_app.listen(xuxinye_PORT, () => {
+  console.log('[xuxinye] 服务已启动：http://localhost:' + xuxinye_PORT);
+  xuxinye_testConnection();
+  xuxinye_ensureKbTables()
     .then(function () {
-      console.log('[Cheney] 知识库数据表已就绪');
-      return Cheney_ensureChatTables();
+      console.log('[xuxinye] 知识库数据表已就绪');
+      return xuxinye_ensureChatTables();
     })
     .then(function () {
-      console.log('[Cheney] 会话数据表已就绪');
+      console.log('[xuxinye] 会话数据表已就绪');
     })
-    .catch(function (Cheney_error) {
-      console.error('[Cheney] 数据表初始化失败：' + Cheney_error.message);
+    .catch(function (xuxinye_error) {
+      console.error('[xuxinye] 数据表初始化失败：' + xuxinye_error.message);
     });
 });

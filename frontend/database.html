@@ -8,63 +8,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>数据库连接测试 | 徐欣烨</title>
-  <link rel="stylesheet" href="./css/Cheney_common.css">
+  <link rel="stylesheet" href="./css/xuxinye_common.css">
 </head>
 <body>
-  <div class="Cheney_shell">
-    <header class="Cheney_topbar">
-      <a class="Cheney_topbar__brand" href="./index.html">徐欣烨 <span>·</span> 科技资讯站</a>
-      <nav class="Cheney_topbar__nav">
-        <a class="Cheney_topbar__link" href="./index.html">首页</a>
-        <a class="Cheney_topbar__link" href="./news.html">科技新闻</a>
-        <a class="Cheney_topbar__link" href="./gallery.html">科技图文</a>
-        <a class="Cheney_topbar__link" href="./chat.html">AI 对话</a>
-        <a class="Cheney_topbar__link" href="./kb.html">RAG 知识库</a>
-        <a class="Cheney_topbar__link Cheney_topbar__link--active" href="./database.html">数据库连接</a>
+  <div class="xuxinye_shell">
+    <header class="xuxinye_topbar">
+      <a class="xuxinye_topbar__brand" href="./index.html">徐欣烨 <span>·</span> 科技资讯站</a>
+      <nav class="xuxinye_topbar__nav">
+        <a class="xuxinye_topbar__link" href="./index.html">首页</a>
+        <a class="xuxinye_topbar__link" href="./news.html">科技新闻</a>
+        <a class="xuxinye_topbar__link" href="./gallery.html">科技图文</a>
+        <a class="xuxinye_topbar__link" href="./chat.html">AI 对话</a>
+        <a class="xuxinye_topbar__link" href="./kb.html">RAG 知识库</a>
+        <a class="xuxinye_topbar__link xuxinye_topbar__link--active" href="./database.html">数据库连接</a>
       </nav>
     </header>
 
-    <main class="Cheney_main">
-      <section class="Cheney_pageHead">
-        <h1 class="Cheney_pageHead__title">数据库连接测试</h1>
-        <p class="Cheney_pageHead__desc">
+    <main class="xuxinye_main">
+      <section class="xuxinye_pageHead">
+        <h1 class="xuxinye_pageHead__title">数据库连接测试</h1>
+        <p class="xuxinye_pageHead__desc">
           输入 MySQL 用户名与密码，点击按钮由后端尝试建立连接并返回结果。
         </p>
       </section>
 
-      <section class="Cheney_apiBox">
-        <div class="Cheney_apiBox__head">
-          <span class="Cheney_apiBox__method">POST</span>
-          <span class="Cheney_apiBox__url">http://localhost:8111/api/db/test</span>
-          <span>请求体：{ "Cheney_user": "root", "Cheney_password": "******" }</span>
+      <section class="xuxinye_apiBox">
+        <div class="xuxinye_apiBox__head">
+          <span class="xuxinye_apiBox__method">POST</span>
+          <span class="xuxinye_apiBox__url">http://localhost:8111/api/db/test</span>
+          <span>请求体：{ "xuxinye_user": "root", "xuxinye_password": "******" }</span>
         </div>
-        <pre class="Cheney_apiBox__json" id="Cheney_apiData">尚未发起请求</pre>
+        <pre class="xuxinye_apiBox__json" id="xuxinye_apiData">尚未发起请求</pre>
       </section>
 
-      <form class="Cheney_form" id="Cheney_dbForm">
-        <div class="Cheney_form__group">
-          <label class="Cheney_label" for="Cheney_user">数据库用户名</label>
-          <input class="Cheney_input" type="text" id="Cheney_user" value="root" autocomplete="off">
+      <form class="xuxinye_form" id="xuxinye_dbForm">
+        <div class="xuxinye_form__group">
+          <label class="xuxinye_label" for="xuxinye_user">数据库用户名</label>
+          <input class="xuxinye_input" type="text" id="xuxinye_user" value="root" autocomplete="off">
         </div>
-        <div class="Cheney_form__group">
-          <label class="Cheney_label" for="Cheney_password">数据库密码</label>
-          <input class="Cheney_input" type="password" id="Cheney_password" value="root" autocomplete="off">
+        <div class="xuxinye_form__group">
+          <label class="xuxinye_label" for="xuxinye_password">数据库密码</label>
+          <input class="xuxinye_input" type="password" id="xuxinye_password" value="root" autocomplete="off">
         </div>
-        <button class="Cheney_btn" type="submit" id="Cheney_submit">连接数据库</button>
+        <button class="xuxinye_btn" type="submit" id="xuxinye_submit">连接数据库</button>
       </form>
 
-      <div class="Cheney_result" id="Cheney_result"></div>
-      <p class="Cheney_tip">
+      <div class="xuxinye_result" id="xuxinye_result"></div>
+      <p class="xuxinye_tip">
         提示：用户名与密码仅用于本次连接测试，接口不会写入数据库；本机实际密码请以 backend/.env 为准。
       </p>
     </main>
 
-    <footer class="Cheney_footer">
+    <footer class="xuxinye_footer">
       徐欣烨 · 22001010111 · 高级网页设计课程作业 · 2026
     </footer>
   </div>
 
-  <script src="./js/Cheney_common.js"></script>
-  <script src="./js/Cheney_database.js"></script>
+  <script src="./js/xuxinye_common.js"></script>
+  <script src="./js/xuxinye_database.js"></script>
 </body>
 </html>

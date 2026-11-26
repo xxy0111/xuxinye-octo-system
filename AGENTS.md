@@ -30,19 +30,18 @@
 
 ### 数据库
 
-- 使用 MySQL。
+- 默认使用 MySQL；同时支持 Supabase Postgres（`DB_DRIVER=supabase`），两者共用同一套模型代码。
 - 数据库凭据只能写入 `backend/.env`，变量名：
-  - `DB_USER`
-  - `DB_PASSWORD`
-  - `DB_HOST`
-  - `DB_NAME`
+  - MySQL：`DB_USER`、`DB_PASSWORD`、`DB_HOST`、`DB_NAME`
+  - Supabase：`SUPABASE_DB_URL`（完整连接串）
+  - 切换：`DB_DRIVER`（`mysql` / `supabase`）
 - 凭据**不得**出现在任何代码文件中，也**不得**写入本文件（AGENTS.md）。
 - `.env` 必须加入 `.gitignore`。
 - 根据后端接口的需要自行创建、修改数据库表；每张表建好后，插入**至少 8 条**具有真实业务意义的测试数据。
 
 ## 命名与注释
 
-- CSS 类名、JS 变量名、JS 函数名、数据库表名及相关字段命名，一律以 `Cheney_` 开头。
+- CSS 类名、JS 变量名、JS 函数名、数据库表名及相关字段命名，一律以 `xuxinye_` 开头。
 - 每个文件头部必须包含注释块：
 
   ```
@@ -53,11 +52,11 @@
 
 ## 记录文件（一律追加写入，禁止覆盖已有内容）
 
-- `Cheney_prompt.md`（项目根目录）：每次向 AI 发出开发指令后，追加记录：
+- `xuxinye_prompt.md`（项目根目录）：每次向 AI 发出开发指令后，追加记录：
   `时间 | 提示词全文 | 大模型名称`
-- `backend/Cheney_interface.md`：每次创建或修改接口后，追加：
+- `backend/xuxinye_interface.md`：每次创建或修改接口后，追加：
   `接口路径 | HTTP 方法 | 请求参数（含示例） | 响应格式（含 JSON 示例） | 修改时间`
-- `backend/Cheney_database.md`：每次建表、改表或插入数据后，按执行顺序追加对应 SQL 语句（含测试数据的 INSERT）。要求仅凭此文件即可在新机器上完整重建数据库。
+- `backend/xuxinye_database.md`：每次建表、改表或插入数据后，按执行顺序追加对应 SQL 语句（含测试数据的 INSERT）。要求仅凭此文件即可在新机器上完整重建数据库。
 
 ### 统一响应格式
 

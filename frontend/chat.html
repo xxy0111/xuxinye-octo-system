@@ -8,86 +8,86 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI 对话 | 徐欣烨</title>
-  <link rel="stylesheet" href="./css/Cheney_common.css">
+  <link rel="stylesheet" href="./css/xuxinye_common.css">
 </head>
 <body>
-  <div class="Cheney_shell">
-    <header class="Cheney_topbar">
-      <a class="Cheney_topbar__brand" href="./index.html">徐欣烨 <span>·</span> 科技资讯站</a>
-      <nav class="Cheney_topbar__nav">
-        <a class="Cheney_topbar__link" href="./index.html">首页</a>
-        <a class="Cheney_topbar__link" href="./news.html">科技新闻</a>
-        <a class="Cheney_topbar__link" href="./gallery.html">科技图文</a>
-        <a class="Cheney_topbar__link Cheney_topbar__link--active" href="./chat.html">AI 对话</a>
-        <a class="Cheney_topbar__link" href="./kb.html">RAG 知识库</a>
-        <a class="Cheney_topbar__link" href="./database.html">数据库连接</a>
+  <div class="xuxinye_shell">
+    <header class="xuxinye_topbar">
+      <a class="xuxinye_topbar__brand" href="./index.html">徐欣烨 <span>·</span> 科技资讯站</a>
+      <nav class="xuxinye_topbar__nav">
+        <a class="xuxinye_topbar__link" href="./index.html">首页</a>
+        <a class="xuxinye_topbar__link" href="./news.html">科技新闻</a>
+        <a class="xuxinye_topbar__link" href="./gallery.html">科技图文</a>
+        <a class="xuxinye_topbar__link xuxinye_topbar__link--active" href="./chat.html">AI 对话</a>
+        <a class="xuxinye_topbar__link" href="./kb.html">RAG 知识库</a>
+        <a class="xuxinye_topbar__link" href="./database.html">数据库连接</a>
       </nav>
     </header>
 
-    <main class="Cheney_main">
-      <section class="Cheney_pageHead">
-        <h1 class="Cheney_pageHead__title">AI 对话</h1>
-        <p class="Cheney_pageHead__desc">
+    <main class="xuxinye_main">
+      <section class="xuxinye_pageHead">
+        <h1 class="xuxinye_pageHead__title">AI 对话</h1>
+        <p class="xuxinye_pageHead__desc">
           会话与消息保存在服务端 MySQL ｜ 模型：qiniu/conatus-free ｜ 密钥仅保存在服务端
         </p>
       </section>
 
-      <section class="Cheney_apiBox">
-        <div class="Cheney_apiBox__head">
-          <span class="Cheney_apiBox__method">POST</span>
-          <span class="Cheney_apiBox__url">http://localhost:8111/api/ai/chat</span>
+      <section class="xuxinye_apiBox">
+        <div class="xuxinye_apiBox__head">
+          <span class="xuxinye_apiBox__method">POST</span>
+          <span class="xuxinye_apiBox__url">http://localhost:8111/api/ai/chat</span>
           <span>最近一次后端接口返回的原始数据</span>
         </div>
-        <pre class="Cheney_apiBox__json" id="Cheney_apiData">尚未发起对话。</pre>
+        <pre class="xuxinye_apiBox__json" id="xuxinye_apiData">尚未发起对话。</pre>
       </section>
 
-      <section class="Cheney_chatLayout">
-        <aside class="Cheney_chatSide">
-          <div class="Cheney_chatSide__head">
+      <section class="xuxinye_chatLayout">
+        <aside class="xuxinye_chatSide">
+          <div class="xuxinye_chatSide__head">
             <span>会话</span>
-            <button class="Cheney_chatSide__new" id="Cheney_newConversation" type="button">＋ 新建</button>
+            <button class="xuxinye_chatSide__new" id="xuxinye_newConversation" type="button">＋ 新建</button>
           </div>
-          <div class="Cheney_chatSide__list" id="Cheney_conversationList">
-            <p class="Cheney_chatSide__empty">正在加载会话……</p>
+          <div class="xuxinye_chatSide__list" id="xuxinye_conversationList">
+            <p class="xuxinye_chatSide__empty">正在加载会话……</p>
           </div>
         </aside>
 
-        <div class="Cheney_chatPanel">
-          <div class="Cheney_chatPanel__bar">
-            <span class="Cheney_chatPanel__title" id="Cheney_conversationTitle">未选择会话</span>
+        <div class="xuxinye_chatPanel">
+          <div class="xuxinye_chatPanel__bar">
+            <span class="xuxinye_chatPanel__title" id="xuxinye_conversationTitle">未选择会话</span>
             <span>在线助手 · <strong>qiniu/conatus-free</strong></span>
           </div>
 
-          <div class="Cheney_chatList" id="Cheney_chatList">
-            <p class="Cheney_chatEmpty" id="Cheney_chatEmpty">
+          <div class="xuxinye_chatList" id="xuxinye_chatList">
+            <p class="xuxinye_chatEmpty" id="xuxinye_chatEmpty">
               <strong>开始和 AI 助手对话</strong>
               历史对话保存在服务端，刷新页面不会丢失。输入内容后按 Enter 发送，Shift + Enter 换行，回复过程中可点击“停止”。
             </p>
           </div>
 
-          <div class="Cheney_chatStatus" id="Cheney_chatStatus"></div>
+          <div class="xuxinye_chatStatus" id="xuxinye_chatStatus"></div>
 
-          <div class="Cheney_chatComposer">
+          <div class="xuxinye_chatComposer">
             <textarea
-              class="Cheney_chatComposer__input"
-              id="Cheney_chatInput"
+              class="xuxinye_chatComposer__input"
+              id="xuxinye_chatInput"
               rows="2"
               maxlength="2000"
               placeholder="请输入你的问题，例如：用 Markdown 给我一个 JavaScript 代码块示例"></textarea>
-            <button class="Cheney_btn" id="Cheney_chatSend" type="button">发送</button>
-            <button class="Cheney_btn Cheney_btn--stop" id="Cheney_chatStop" type="button" hidden>停止</button>
+            <button class="xuxinye_btn" id="xuxinye_chatSend" type="button">发送</button>
+            <button class="xuxinye_btn xuxinye_btn--stop" id="xuxinye_chatStop" type="button" hidden>停止</button>
           </div>
-          <p class="Cheney_chatComposer__hint">Enter 发送 ｜ Shift + Enter 换行 ｜ 单条消息最多 2000 字 ｜ 按 Token 预算自动裁剪历史</p>
+          <p class="xuxinye_chatComposer__hint">Enter 发送 ｜ Shift + Enter 换行 ｜ 单条消息最多 2000 字 ｜ 按 Token 预算自动裁剪历史</p>
         </div>
       </section>
     </main>
 
-    <footer class="Cheney_footer">
+    <footer class="xuxinye_footer">
       徐欣烨 · 22001010111 · 高级网页设计课程作业 · 2026
     </footer>
   </div>
 
-  <script src="./js/Cheney_common.js"></script>
-  <script src="./js/Cheney_chat.js"></script>
+  <script src="./js/xuxinye_common.js"></script>
+  <script src="./js/xuxinye_chat.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 {
-  "name": "cheney-backend",
+  "name": "xuxinye-backend",
   "version": "1.0.0",
   "private": true,
   "description": "徐欣烨 22001010111 高级网页设计课程项目后端",
@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "node --watch app.js",
-    "seed:kb": "node scripts/Cheney_seed_kb.js"
+    "seed:kb": "node scripts/xuxinye_seed_kb.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -18,6 +18,7 @@
     "multer": "^2.0.2",
     "mysql2": "^3.11.3",
     "pdf-parse": "^1.1.1",
+    "pg": "^8.23.1",
     "word-extractor": "^1.0.4"
   }
 }
